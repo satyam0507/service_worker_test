@@ -1,0 +1,17 @@
+{
+  "name": "serviceworker",
+  "version": "1.0.0",
+  "description": "this project is to test various service worker functionality",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Satyam Singh (satyam0507@gmail.com)",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.15.0",
+    "body-parser": "^1.15.2",
+    "express-handlebars": "^3.0.0",
+    "sw-toolbox": "^3.6.0"
+  }
+}
