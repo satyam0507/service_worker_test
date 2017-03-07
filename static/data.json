@@ -1,0 +1,14 @@
+{
+    "ver": "0.0.8",
+    "cache": {
+        "name": "notify-abc",
+        "maxAge": 604800,
+        "maxLimit": 1000
+    },
+    "preCache": [
+        "/",
+        "app.css",
+        "app.js"
+    ],
+    "handler": "fastest"
+}

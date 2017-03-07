@@ -29,14 +29,6 @@
             preCache: [
                 '/'
             ],
-            urls: {
-                '/view3': {
-                    method: 'get',
-                    maxAge: 604800,
-                    maxLimit: 1000,
-                    handler:'networkOnly'
-                }
-            },
             handler: 'fastest' // we have to check it with the default values;
 
         };
@@ -143,22 +135,27 @@
         validatePreCache: function (preCache) {
             return Array.isArray(preCache);
         },
+        get: function (regex, handler, maxAge, maxLimit, cacheName) {
+            toolbox.router.get(regex, toolbox[handler], { 'cache': { 'name': cacheName, 'maxAgeSeconds': maxAge, 'maxEntries': maxLimit } });
+        },
+        post: function (regex, handler, maxAge, maxLimit, cacheName) {
+            toolbox.router.post(regex, toolbox[handler], { 'cache': { 'name': cacheName, 'maxAgeSeconds': maxAge, 'maxEntries': maxLimit } })
+        },
         notify_toolbox: function (configOption) {
             // console.log(configOption);
             importScripts('/sw-toolbox.js');
-            toolbox.options.debug = true;
+            // toolbox.options.debug = true;
             toolbox.options.cache.name = configOption.cache.name;
             toolbox.options.preCacheItems = configOption.preCache;
-
-            toolbox.router.get('/view3', toolbox.networkOnly, { 'cache': { 'name': configOption.cache.name, 'maxAgeSeconds': configOption.cache.maxAge, 'maxEntries': configOption.cache.maxLimit } });
-            toolbox.router.get('/home', toolbox[configOption.handler], { 'cache': { 'name': configOption.cache.name, 'maxAgeSeconds': configOption.cache.maxAge, 'maxEntries': configOption.cache.maxLimit } });
+           
             toolbox.router.default = toolbox[configOption.handler];
 
-            // if(configOption.hasOwnProperty('urls')){
-            //     for(url in configOption.urls){
-            //         if(configOption.urls[url])
-            //     }
-            // }
+            if (configOption.hasOwnProperty('urls')) {
+                for (var url in configOption.urls) {
+                    // console.log(url);
+                    utils[configOption.urls[url].method](url, configOption.urls[url].handler, configOption.urls[url].maxAge, configOption.urls[url].maxLimit, configOption.cache.name);
+                }
+            }
 
         }
     };

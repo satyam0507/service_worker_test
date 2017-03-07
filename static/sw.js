@@ -12,29 +12,42 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
-ver = '0.0.8';
+
 importScripts('notify-sw.js');
+// var jsonData = {};
+// fetch('/data.json').then(function (res) {
+//     // console.log(res);
+//     res.json().then(function (json) {
+//         // console.log(json);
+//         // console.log(notify);
 
-// console.log(toolbox);
+//     })
+// }).catch(function (err) {
+//     console.log(err);
+// })
 
+var ver = '0.0.6';
 var config = {
     cache: {
-        name: 'notify-abc',
+        name: "notify-abc",
         maxAge: 604800,
-        maxLimit: 1000
+        maxLimit: 10000
     },
     preCache: [
         '/',
         'app.css',
         'app.js'
     ],
-    handler: 'fastest',
+    handler: "fastest",
+    urls: {
+        '/': {
+            method: 'get',
+            maxAge: 604800,
+            maxLimit: 10000,
+            handler: 'cacheOnly'
+        }
+    },
 
 }
 
 notify.init(config);
-// toolbox.options.preCacheItems = [
-//     '/',
-//     'app.css',
-//     'app.js'
-// ];
