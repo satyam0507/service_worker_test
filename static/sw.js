@@ -12,42 +12,54 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
+var ver = '0.0.8';
+
 
 importScripts('notify-sw.js');
-// var jsonData = {};
-// fetch('/data.json').then(function (res) {
-//     // console.log(res);
-//     res.json().then(function (json) {
-//         // console.log(json);
-//         // console.log(notify);
 
-//     })
-// }).catch(function (err) {
-//     console.log(err);
-// })
 
-var ver = '0.0.6';
 var config = {
     cache: {
-        name: "notify-abc",
-        maxAge: 604800,
-        maxLimit: 10000
+        name: "notify-abc", //@ string
+        maxAge: 604800,     //@ number in sec
+        maxLimit: 10000     //@ number in sec
     },
     preCache: [
         '/',
         'app.css',
-        'app.js'
+        'app.js',
+        '/offline'
     ],
-    handler: "fastest",
+    defaultHandler: "networkFirst",
     urls: {
         '/': {
-            method: 'get',
-            maxAge: 604800,
-            maxLimit: 10000,
-            handler: 'cacheOnly'
+            // requestType: 'get',    // @ string
+            // maxAge: 604800,   //@ number in sec
+            // maxLimit: 10000,  //@ number in sec
+            handler: 'fastest' // @ string
+        },
+        '/view4': {
+            // requestType: 'get',    // @ string
+            // maxAge: 604800,   //@ number in sec
+            // maxLimit: 10000,  //@ number in sec
+            handler: 'fastest' // @ string
         }
     },
-
+    staticFiles: {
+        '/\*\.jpg': {
+            requestType: 'get',       // @ string
+            maxAge: 604800,   //@ number in sec
+            maxLimit: 10000   //@ number in sec
+        }
+    },
+    dynamicFiles: {
+        '/\*\.json': {
+            requestType: 'get',      // @ string
+            maxAge: 604800,  //@ number in sec
+            maxLimit: 10000  //@ number in sec
+        }
+    },
+    navigationFallback: '/offline'
 }
 
 notify.init(config);

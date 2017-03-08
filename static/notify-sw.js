@@ -19,6 +19,7 @@
 
     // console.log(this);
     var handlerArray = ['cacheFirst', 'cacheOnly', 'fastest', 'networkFirst', 'networkOnly'];
+    var requestTypeArray = ['get', 'post', 'put', 'delete', 'head'];
     var Notify = function () {
         this.options = {
             cache: {
@@ -29,7 +30,8 @@
             preCache: [
                 '/'
             ],
-            handler: 'fastest' // we have to check it with the default values;
+            defaultHandler: 'fastest', // we have to check it with the default values;
+            navigationFallback:'/offline'
 
         };
 
@@ -42,11 +44,13 @@
             //object is valid and has keys
             // extend the option with default option
             var extendedOption = utils.extends(this.options, option);
-            console.log(extendedOption);
+
+            // console.log(extendedOption);
 
             if (utils.validateOptions(extendedOption)) {
 
                 console.log('option is valid');
+
                 utils.notify_toolbox(extendedOption);
 
             } else {
@@ -103,7 +107,7 @@
         validateOptions: function (option) {
             var isValidArray = [];
             var isValid = true;
-            isValidArray.push(utils.validateHandler(option.handler));
+            isValidArray.push(utils.validateHandler(option.defaultHandler));
             isValidArray.push(utils.validatePreCache(option.preCache));
 
 
@@ -135,27 +139,164 @@
         validatePreCache: function (preCache) {
             return Array.isArray(preCache);
         },
+        validateRequestType: function (requestType) {
+            if (typeof requestType === 'string' && requestType.length) {
+                if (requestTypeArray.indexOf(requestType) !== -1) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+
+        },
         get: function (regex, handler, maxAge, maxLimit, cacheName) {
-            toolbox.router.get(regex, toolbox[handler], { 'cache': { 'name': cacheName, 'maxAgeSeconds': maxAge, 'maxEntries': maxLimit } });
+            // check if regex is valid or not 
+            if (typeof regex === 'string' && regex.length) {
+                toolbox.router.get(
+                    regex,
+                    toolbox[handler] || utils.getDeaultHandler,
+                    {
+                        'cache':
+                        {
+                            'name': cacheName || utils.getDeaultCacheName,
+                            'maxAgeSeconds': maxAge || utils.getDeaultMaxAge,
+                            'maxEntries': maxLimit || utils.getDeaultMaxLimit
+                        }
+                    });
+            } else {
+                console.log('not a valid regex');
+                return;
+            }
+
         },
         post: function (regex, handler, maxAge, maxLimit, cacheName) {
-            toolbox.router.post(regex, toolbox[handler], { 'cache': { 'name': cacheName, 'maxAgeSeconds': maxAge, 'maxEntries': maxLimit } })
+            // check if regex is valid or not 
+            if (typeof regex === 'string' && regex.length) {
+                toolbox.router.post(
+                    regex,
+                    toolbox[handler] || utils.getDeaultHandler,
+                    {
+                        'cache':
+                        {
+                            'name': cacheName || utils.getDeaultCacheName,
+                            'maxAgeSeconds': maxAge || utils.getDeaultMaxAge,
+                            'maxEntries': maxLimit || utils.getDeaultMaxLimit
+                        }
+                    }
+                )
+            } else {
+                console.log('not a valid regex');
+                return;
+            }
+        },
+        any: function (regex, handler, maxAge, maxLimit, cacheName) {
+            // check if regex is valid or not 
+            if (typeof regex === 'string' && regex.length) {
+                toolbox.router.any(
+                    regex,
+                    toolbox[handler] || utils.getDeaultHandler,
+                    {
+                        'cache':
+                        {
+                            'name': cacheName || utils.getDeaultCacheName,
+                            'maxAgeSeconds': maxAge || utils.getDeaultMaxAge,
+                            'maxEntries': maxLimit || utils.getDeaultMaxLimit
+                        }
+                    }
+                )
+            } else {
+                console.log('not a valid regex');
+                return;
+            }
+        },
+        getDeaultHandler: function () {
+            return self.notify.options.defaultHandler;
+        },
+        getDeaultCacheName: function () {
+            return self.notify.options.cache.cacheName;
+        },
+        getDeaultMaxAge: function () {
+            return self.notify.options.cache.maxAge;
+        },
+        getDeaultMaxLimit: function () {
+            return self.notify.options.cache.maxLimit;
         },
         notify_toolbox: function (configOption) {
-            // console.log(configOption);
+
             importScripts('/sw-toolbox.js');
-            // toolbox.options.debug = true;
+            var _defaultRequestType = 'any';
+            toolbox.options.debug = true;
             toolbox.options.cache.name = configOption.cache.name;
             toolbox.options.preCacheItems = configOption.preCache;
-           
-            toolbox.router.default = toolbox[configOption.handler];
+            toolbox.options.navigationFallback = configOption.navigationFallback;
+
+            self.addEventListener('fetch', event => {
+                if (event.request.mode === 'navigate') {
+                    console.log(event.request);
+                }
+            });
 
             if (configOption.hasOwnProperty('urls')) {
-                for (var url in configOption.urls) {
+                for (var urlPattern in configOption.urls) {
                     // console.log(url);
-                    utils[configOption.urls[url].method](url, configOption.urls[url].handler, configOption.urls[url].maxAge, configOption.urls[url].maxLimit, configOption.cache.name);
+                    // check if the 'requestType' property is provided by the user for this url/express regex
+                    // if not then we will default it to get() requestType
+                    var _requestType = configOption.urls[urlPattern].requestType;
+                    var _handler = configOption.urls[urlPattern].handler;
+                    var _maxAge = configOption.urls[urlPattern].maxAge;
+                    var _maxLimit = configOption.urls[urlPattern].maxLimit;
+                    var _cacheName = configOption.cache.name;
+                    if (_requestType && utils.validateRequestType(_requestType)) {
+                        // yes  'requestType' property is present
+                        utils[_requestType](urlPattern, _handler, _maxAge, _maxLimit, _cacheName);
+                    } else {
+                        // no 'requestType' property is not present
+                        //  fallback to default
+                        utils[_defaultRequestType](urlPattern, _handler, _maxAge, _maxLimit, _cacheName);
+
+                    }
                 }
             }
+            if (configOption.hasOwnProperty('staticFiles')) {
+                for (var urlPattern in configOption.sataticFiles) {
+                    var _requestType = configOption.staticFiles[urlPattern].requestType;
+                    var _handler = 'cacheOnly';
+                    var _maxAge = configOption.staticFiles[urlPattern].maxAge;
+                    var _maxLimit = configOption.staticFiles[urlPattern].maxLimit;
+                    var _cacheName = utils.getDeaultCacheName;
+                    if (_requestType && utils.validateRequestType(_requestType)) {
+                        // yes  'requestType' property is present
+                        utils[_requestType](urlPattern, _handler, _maxAge, _maxLimit, _cacheName);
+                    } else {
+                        // no 'requestType' property is not present
+                        //  fallback to default
+                        utils[_defaultRequestType](urlPattern, _handler, _maxAge, _maxLimit, _cacheName);
+
+                    }
+                }
+            }
+            if (configOption.hasOwnProperty('dynamicFiles')) {
+                for (var urlPattern in configOption.dynamicFiles) {
+                    var _requestType = configOption.dynamicFiles[urlPattern].requestType;
+                    var _handler = 'networkOnly';
+                    var _maxAge = configOption.dynamicFiles[urlPattern].maxAge;
+                    var _maxLimit = configOption.dynamicFiles[urlPattern].maxLimit;
+                    var _cacheName = utils.getDeaultCacheName;
+                    if (_requestType && utils.validateRequestType(_requestType)) {
+                        // yes  'requestType' property is present
+                        utils[_requestType](urlPattern, _handler, _maxAge, _maxLimit, _cacheName);
+                    } else {
+                        // no 'requestType' property is not present
+                        //  fallback to default
+                        utils[_defaultRequestType](urlPattern, _handler, _maxAge, _maxLimit, _cacheName);
+                    }
+                }
+            }
+
+            // add default handler if some request does not match
+            toolbox.router.default = toolbox[configOption.defaultHandler];
 
         }
     };
