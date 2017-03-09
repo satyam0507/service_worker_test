@@ -12,54 +12,9 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
-var ver = '0.0.8';
+var ver = '0.0.14';
 
 
-importScripts('notify-sw.js');
+importScripts('./notify-sw.js');
 
 
-var config = {
-    cache: {
-        name: "notify-abc", //@ string
-        maxAge: 604800,     //@ number in sec
-        maxLimit: 10000     //@ number in sec
-    },
-    preCache: [
-        '/',
-        'app.css',
-        'app.js',
-        '/offline'
-    ],
-    defaultHandler: "networkFirst",
-    urls: {
-        '/': {
-            // requestType: 'get',    // @ string
-            // maxAge: 604800,   //@ number in sec
-            // maxLimit: 10000,  //@ number in sec
-            handler: 'fastest' // @ string
-        },
-        '/view4': {
-            // requestType: 'get',    // @ string
-            // maxAge: 604800,   //@ number in sec
-            // maxLimit: 10000,  //@ number in sec
-            handler: 'fastest' // @ string
-        }
-    },
-    staticFiles: {
-        '/\*\.jpg': {
-            requestType: 'get',       // @ string
-            maxAge: 604800,   //@ number in sec
-            maxLimit: 10000   //@ number in sec
-        }
-    },
-    dynamicFiles: {
-        '/\*\.json': {
-            requestType: 'get',      // @ string
-            maxAge: 604800,  //@ number in sec
-            maxLimit: 10000  //@ number in sec
-        }
-    },
-    navigationFallback: '/offline'
-}
-
-notify.init(config);

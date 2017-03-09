@@ -17,35 +17,49 @@
 (function () {
     'use strict';
 
-    // console.log(this);
     var handlerArray = ['cacheFirst', 'cacheOnly', 'fastest', 'networkFirst', 'networkOnly'];
     var requestTypeArray = ['get', 'post', 'put', 'delete', 'head'];
     var Notify = function () {
+
+        // default option 
+
+        // @ option.cache ::- contain the default configuration about the cache
+        // @ option.cache.name ::- default name of the primary cache if not provided then 'notify-1'            
+        // @ option.cache.maxAge ::-  time in second after which response is will be consider fresh            
+        // @ option.cache.maxLimit ::- max limit of entries in the cache                             
+        //              
         this.options = {
             cache: {
                 name: 'notify-1',
                 maxAge: 604800,
                 maxLimit: 1000
             },
+
+            // @ option.preCache ::- Array that contain urlPattern that will be precache at 
+            //                       install phase of the service worker
             preCache: [
-                '/'
+                '/offline' //todo link to our custom offline page   
             ],
-            defaultHandler: 'fastest', // we have to check it with the default values;
-            navigationFallback:'/offline'
+
+            // @ defaultHandler ::- it is the default handler for the Requests 
+            defaultHandler: 'fastest',
+
+            // @ navigationFallback ::- fallback page which will be served if both network and cache request fails
+            navigationFallback: '/offline' //todo link to our custom offline page
 
         };
 
     }
 
     Notify.prototype.init = function (option) {
-        // chech if option object is avaliable and has keys
 
+        // chech if option object is avaliable and has keys
         if (typeof option === 'object' && Object.keys(option).length >= 1) {
+
             //object is valid and has keys
+
             // extend the option with default option
             var extendedOption = utils.extends(this.options, option);
-
-            // console.log(extendedOption);
 
             if (utils.validateOptions(extendedOption)) {
 
@@ -61,6 +75,8 @@
             //  extend default values
 
             console.log('initializing with default values');
+            option = this.options;
+            utils.notify_toolbox(option);
         }
 
     }
@@ -156,13 +172,13 @@
             if (typeof regex === 'string' && regex.length) {
                 toolbox.router.get(
                     regex,
-                    toolbox[handler] || utils.getDeaultHandler,
+                    toolbox[handler] || utils.getDeaultHandler(),
                     {
                         'cache':
                         {
-                            'name': cacheName || utils.getDeaultCacheName,
-                            'maxAgeSeconds': maxAge || utils.getDeaultMaxAge,
-                            'maxEntries': maxLimit || utils.getDeaultMaxLimit
+                            'name': cacheName || utils.getDeaultCacheName(),
+                            'maxAgeSeconds': maxAge || utils.getDeaultMaxAge(),
+                            'maxEntries': maxLimit || utils.getDeaultMaxLimit()
                         }
                     });
             } else {
@@ -176,13 +192,13 @@
             if (typeof regex === 'string' && regex.length) {
                 toolbox.router.post(
                     regex,
-                    toolbox[handler] || utils.getDeaultHandler,
+                    toolbox[handler] || utils.getDeaultHandler(),
                     {
                         'cache':
                         {
-                            'name': cacheName || utils.getDeaultCacheName,
-                            'maxAgeSeconds': maxAge || utils.getDeaultMaxAge,
-                            'maxEntries': maxLimit || utils.getDeaultMaxLimit
+                            'name': cacheName || utils.getDeaultCacheName(),
+                            'maxAgeSeconds': maxAge || utils.getDeaultMaxAge(),
+                            'maxEntries': maxLimit || utils.getDeaultMaxLimit()
                         }
                     }
                 )
@@ -196,13 +212,13 @@
             if (typeof regex === 'string' && regex.length) {
                 toolbox.router.any(
                     regex,
-                    toolbox[handler] || utils.getDeaultHandler,
+                    toolbox[handler] || utils.getDeaultHandler(),
                     {
                         'cache':
                         {
-                            'name': cacheName || utils.getDeaultCacheName,
-                            'maxAgeSeconds': maxAge || utils.getDeaultMaxAge,
-                            'maxEntries': maxLimit || utils.getDeaultMaxLimit
+                            'name': cacheName || utils.getDeaultCacheName(),
+                            'maxAgeSeconds': maxAge || utils.getDeaultMaxAge(),
+                            'maxEntries': maxLimit || utils.getDeaultMaxLimit()
                         }
                     }
                 )
@@ -225,18 +241,18 @@
         },
         notify_toolbox: function (configOption) {
 
-            importScripts('/sw-toolbox.js');
+            importScripts('./sw-toolbox.js');
             var _defaultRequestType = 'any';
             toolbox.options.debug = true;
             toolbox.options.cache.name = configOption.cache.name;
             toolbox.options.preCacheItems = configOption.preCache;
             toolbox.options.navigationFallback = configOption.navigationFallback;
 
-            self.addEventListener('fetch', event => {
-                if (event.request.mode === 'navigate') {
-                    console.log(event.request);
-                }
-            });
+            // self.addEventListener('fetch', event => {
+            //     if (event.request.mode === 'navigate') {
+            //         console.log(event.request);
+            //     }
+            // });
 
             if (configOption.hasOwnProperty('urls')) {
                 for (var urlPattern in configOption.urls) {
@@ -303,7 +319,58 @@
 
 
     function attachToSelf() {
-        return new Notify()
+        return new Notify();
     }
     self.notify = attachToSelf();
 }).call(typeof self !== 'undefined' ? self : console.log('include notify-sw only in service worker file'));
+
+
+
+
+var config = {
+    cache: {
+        name: "notify-abc", //@ string
+        maxAge: 604800,     //@ number in sec
+        maxLimit: 10000     //@ number in sec
+    },
+    preCache: [
+        '/',
+        'app.css',
+        'app.js',
+        '/offline'   //todo link to our custom offline page
+    ],
+    defaultHandler: "networkFirst",
+    urls: {
+        '/': {
+            // requestType: 'get',    // @ string
+            // maxAge: 604800,   //@ number in sec
+            // maxLimit: 10000,  //@ number in sec
+            handler: 'fastest' // @ string
+        },
+        '/view4': {
+            // requestType: 'get',    // @ string
+            // maxAge: 604800,   //@ number in sec
+            // maxLimit: 10000,  //@ number in sec
+            handler: 'fastest' // @ string
+        }
+    },
+    staticFiles: {
+        '/\*\.jpg': {
+            requestType: 'get',       // @ string
+            maxAge: 604800,   //@ number in sec
+            maxLimit: 10000   //@ number in sec
+        }
+    },
+    dynamicFiles: {
+        '/\*\.json': {
+            requestType: 'get',      // @ string
+            // maxAge: 604800,  //@ number in sec
+            // maxLimit: 10000  //@ number in sec
+        }
+    },
+    navigationFallback: '/offline'  //todo link to our custom offline page 
+}
+
+// notify.init(config);
+
+notify.init();l.f
