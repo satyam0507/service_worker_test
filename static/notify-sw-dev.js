@@ -340,7 +340,7 @@
         function attachToSelf() {
             return new Notify();
         }
-    }else{
+    } else {
         throw new Error('Include only with service worker file ServiceWorkerGlobalScope is required to work with');
     }
 });

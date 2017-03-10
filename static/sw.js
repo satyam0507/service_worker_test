@@ -12,7 +12,7 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
-var ver = '0.0.14';
+var ver = '0.0.24';
 
 
 importScripts('./notify-sw.js');
