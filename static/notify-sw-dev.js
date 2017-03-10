@@ -1,4 +1,4 @@
-//    Copyright 2017 Satyam Singh (satyam0507@gmail.com) All Rights Reserved.
+//    Copyright 2017 Notifyvisitors.com All Rights Reserved.
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -11,8 +11,8 @@
 //    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
-
-
+//
+importScripts('sw-toolbox.js');
 (function (global, fn) {
     if (typeof module === "object" && typeof module.exports === "object") {
 
@@ -32,7 +32,7 @@
     'use strict';
     if (global.importScripts) {
 
-
+        //        importScripts('/sw-toolbox.js');
         var strundefined = typeof undefined;
         var handlerArray = ['cacheFirst', 'cacheOnly', 'fastest', 'networkFirst', 'networkOnly'];
         var requestTypeArray = ['get', 'post', 'put', 'delete', 'head'];
@@ -51,18 +51,15 @@
                     maxAge: 604800,
                     maxLimit: 1000
                 },
-
                 // @ option.preCache ::- Array that contain urlPattern that will be precache at 
                 //                       install phase of the service worker
                 preCache: [
-                    '/offline' //todo link to our custom offline page   
+                    '/' //todo link to our custom offline page   
                 ],
-
                 // @ defaultHandler ::- it is the default handler for the Requests 
                 defaultHandler: 'fastest',
-
                 // @ navigationFallback ::- fallback page which will be served if both network and cache request fails
-                navigationFallback: '/offline' //todo link to our custom offline page
+                navigationFallback: '/' //todo link to our custom offline page
 
             };
 
@@ -136,7 +133,6 @@
                 return extended;
 
             },
-
             validateOptions: function (option) {
                 var isValidArray = [];
                 var isValid = true;
@@ -151,7 +147,6 @@
                 })
                 return isValid;
             },
-
             validateHandler: function (handler) {
 
                 if (typeof handler === 'string' && handler.length) {
@@ -184,61 +179,104 @@
                 }
 
             },
-            get: function (regex, handler, maxAge, maxLimit, cacheName) {
+            get: function (regex, handler, maxAge, maxLimit, cacheName, origin) {
                 // check if regex is valid or not 
                 if (typeof regex === 'string' && regex.length) {
-                    toolbox.router.get(
-                        regex,
-                        toolbox[handler] || utils.getDeaultHandler(),
-                        {
-                            'cache':
+                    if (typeof origin === 'string' && origin.length) {
+                        toolbox.router.any(
+                            regex,
+                            toolbox[handler] || utils.getDeaultHandler(),
                             {
-                                'name': cacheName || utils.getDeaultCacheName(),
-                                'maxAgeSeconds': maxAge || utils.getDeaultMaxAge(),
-                                'maxEntries': maxLimit || utils.getDeaultMaxLimit()
+                                'origin': origin
                             }
-                        });
+                        )
+                    } else {
+                        toolbox.router.any(
+                            regex,
+                            toolbox[handler] || utils.getDeaultHandler(),
+                            {
+                                'cache':
+                                {
+                                    'name': cacheName || utils.getDeaultCacheName(),
+                                    'maxAgeSeconds': maxAge || utils.getDeaultMaxAge(),
+                                    'maxEntries': maxLimit || utils.getDeaultMaxLimit()
+                                }
+
+                            }
+                        )
+                    }
                 } else {
                     console.log('not a valid regex');
                     return;
                 }
 
             },
-            post: function (regex, handler, maxAge, maxLimit, cacheName) {
+            post: function (regex, handler, maxAge, maxLimit, cacheName, origin) {
                 // check if regex is valid or not 
                 if (typeof regex === 'string' && regex.length) {
-                    toolbox.router.post(
-                        regex,
-                        toolbox[handler] || utils.getDeaultHandler(),
-                        {
-                            'cache':
+                    if (typeof origin === 'string' && origin.length) {
+                        toolbox.router.any(
+                            regex,
+                            toolbox[handler] || utils.getDeaultHandler(),
                             {
-                                'name': cacheName || utils.getDeaultCacheName(),
-                                'maxAgeSeconds': maxAge || utils.getDeaultMaxAge(),
-                                'maxEntries': maxLimit || utils.getDeaultMaxLimit()
+                                'origin': origin
                             }
-                        }
-                    )
+                        )
+                    } else {
+                        toolbox.router.any(
+                            regex,
+                            toolbox[handler] || utils.getDeaultHandler(),
+                            {
+                                'cache':
+                                {
+                                    'name': cacheName || utils.getDeaultCacheName(),
+                                    'maxAgeSeconds': maxAge || utils.getDeaultMaxAge(),
+                                    'maxEntries': maxLimit || utils.getDeaultMaxLimit()
+                                }
+
+                            }
+                        )
+                    }
                 } else {
                     console.log('not a valid regex');
                     return;
                 }
             },
-            any: function (regex, handler, maxAge, maxLimit, cacheName) {
+            any: function (regex, handler, maxAge, maxLimit, cacheName, origin) {
                 // check if regex is valid or not 
                 if (typeof regex === 'string' && regex.length) {
-                    toolbox.router.any(
-                        regex,
-                        toolbox[handler] || utils.getDeaultHandler(),
-                        {
-                            'cache':
+                    if (typeof origin === 'string' && origin.length) {
+                        toolbox.router.any(
+                            regex,
+                            toolbox[handler] || utils.getDeaultHandler(),
+                            // {
+                            //     'cache':
+                            //             {
+                            //                 'name': cacheName || utils.getDeaultCacheName(),
+                            //                 'maxAgeSeconds': maxAge || utils.getDeaultMaxAge(),
+                            //                 'maxEntries': maxLimit || utils.getDeaultMaxLimit()
+                            //             }
+
+                            // }, 
                             {
-                                'name': cacheName || utils.getDeaultCacheName(),
-                                'maxAgeSeconds': maxAge || utils.getDeaultMaxAge(),
-                                'maxEntries': maxLimit || utils.getDeaultMaxLimit()
+                                origin: origin
                             }
-                        }
-                    )
+                        )
+                    } else {
+                        toolbox.router.any(
+                            regex,
+                            toolbox[handler] || utils.getDeaultHandler(),
+                            {
+                                'cache':
+                                {
+                                    'name': cacheName || utils.getDeaultCacheName(),
+                                    'maxAgeSeconds': maxAge || utils.getDeaultMaxAge(),
+                                    'maxEntries': maxLimit || utils.getDeaultMaxLimit()
+                                }
+
+                            }
+                        )
+                    }
                 } else {
                     console.log('not a valid regex');
                     return;
@@ -258,7 +296,7 @@
             },
             notify_toolbox: function (configOption) {
 
-                importScripts('./sw-toolbox.js');
+
                 var _defaultRequestType = 'any';
                 toolbox.options.debug = true;
                 toolbox.options.cache.name = configOption.cache.name;
@@ -281,31 +319,33 @@
                         var _maxAge = configOption.urls[urlPattern].maxAge;
                         var _maxLimit = configOption.urls[urlPattern].maxLimit;
                         var _cacheName = configOption.cache.name;
+                        var _origin = configOption.urls[urlPattern].origin;
                         if (_requestType && utils.validateRequestType(_requestType)) {
                             // yes  'requestType' property is present
-                            utils[_requestType](urlPattern, _handler, _maxAge, _maxLimit, _cacheName);
+                            utils[_requestType](urlPattern, _handler, _maxAge, _maxLimit, _cacheName, _origin);
                         } else {
                             // no 'requestType' property is not present
                             //  fallback to default
-                            utils[_defaultRequestType](urlPattern, _handler, _maxAge, _maxLimit, _cacheName);
+                            utils[_defaultRequestType](urlPattern, _handler, _maxAge, _maxLimit, _cacheName, _origin);
 
                         }
                     }
                 }
                 if (configOption.hasOwnProperty('staticFiles')) {
-                    for (var urlPattern in configOption.sataticFiles) {
+                    for (var urlPattern in configOption.staticFiles) {
                         var _requestType = configOption.staticFiles[urlPattern].requestType;
-                        var _handler = 'cacheOnly';
+                        var _handler = 'cacheFirst';
                         var _maxAge = configOption.staticFiles[urlPattern].maxAge;
                         var _maxLimit = configOption.staticFiles[urlPattern].maxLimit;
-                        var _cacheName = utils.getDeaultCacheName;
+                        var _cacheName = utils.getDeaultCacheName();
+                        var _origin = configOption.staticFiles[urlPattern].origin;
                         if (_requestType && utils.validateRequestType(_requestType)) {
                             // yes  'requestType' property is present
-                            utils[_requestType](urlPattern, _handler, _maxAge, _maxLimit, _cacheName);
+                            utils[_requestType](urlPattern, _handler, _maxAge, _maxLimit, _cacheName, _origin);
                         } else {
                             // no 'requestType' property is not present
                             //  fallback to default
-                            utils[_defaultRequestType](urlPattern, _handler, _maxAge, _maxLimit, _cacheName);
+                            utils[_defaultRequestType](urlPattern, _handler, _maxAge, _maxLimit, _cacheName, _origin);
 
                         }
                     }
@@ -316,14 +356,15 @@
                         var _handler = 'networkOnly';
                         var _maxAge = configOption.dynamicFiles[urlPattern].maxAge;
                         var _maxLimit = configOption.dynamicFiles[urlPattern].maxLimit;
-                        var _cacheName = utils.getDeaultCacheName;
+                        var _cacheName = utils.getDeaultCacheName();
+                        var _origin = cpnfigOption.dynamicFiles[urlPattern].origin;
                         if (_requestType && utils.validateRequestType(_requestType)) {
                             // yes  'requestType' property is present
-                            utils[_requestType](urlPattern, _handler, _maxAge, _maxLimit, _cacheName);
+                            utils[_requestType](urlPattern, _handler, _maxAge, _maxLimit, _cacheName, _origin);
                         } else {
                             // no 'requestType' property is not present
                             //  fallback to default
-                            utils[_defaultRequestType](urlPattern, _handler, _maxAge, _maxLimit, _cacheName);
+                            utils[_defaultRequestType](urlPattern, _handler, _maxAge, _maxLimit, _cacheName._origin);
                         }
                     }
                 }
@@ -334,30 +375,28 @@
             }
         };
 
+        var attachToSelf = function () {
+            return new Notify();
+        }
+
         if (typeof flag === strundefined) {
             self.notify = attachToSelf();
         }
-        function attachToSelf() {
-            return new Notify();
-        }
+
     } else {
         throw new Error('Include only with service worker file ServiceWorkerGlobalScope is required to work with');
     }
 });
 
 
-
 var config = {
     cache: {
-        name: "notify-abc", //@ string
-        maxAge: 604800,     //@ number in sec
+        name: "notify-1", //@ string
+        maxAge: 604800, //@ number in sec
         maxLimit: 10000     //@ number in sec
     },
     preCache: [
         '/',
-        'app.css',
-        'app.js',
-        '/offline'   //todo link to our custom offline page
     ],
     defaultHandler: "networkFirst",
     urls: {
@@ -365,32 +404,35 @@ var config = {
             // requestType: 'get',    // @ string
             // maxAge: 604800,   //@ number in sec
             // maxLimit: 10000,  //@ number in sec
-            handler: 'fastest' // @ string
+            handler: 'fastest', // @ string
+            // origin:''
         },
-        '/view4': {
-            // requestType: 'get',    // @ string
-            // maxAge: 604800,   //@ number in sec
-            // maxLimit: 10000,  //@ number in sec
-            handler: 'fastest' // @ string
-        }
     },
     staticFiles: {
+        '/\*\.css': {
+            maxAge: 604800, //@ number in sec
+            maxLimit: 10000, //@ number in sec
+            origin: 'https://maxcdn.bootstrapcdn.com'
+        },
         '/\*\.jpg': {
-            requestType: 'get',       // @ string
-            maxAge: 604800,   //@ number in sec
-            maxLimit: 10000   //@ number in sec
+            maxAge: 604800, //@ number in sec
+            maxLimit: 10000, //@ number in sec
+            // origin: 'https://s3.amazonaws.com'
         }
     },
     dynamicFiles: {
-        '/\*\.json': {
-            requestType: 'get',      // @ string
-            // maxAge: 604800,  //@ number in sec
-            // maxLimit: 10000  //@ number in sec
-        }
+        //        '/^\/\*\.json(?:\/(?=$))?$/i': {
+        //            requestType: 'get', // @ string
+        //            // maxAge: 604800,  //@ number in sec
+        //            // maxLimit: 10000  //@ number in sec
+        //            origin:''
+        //        }
+
     },
-    navigationFallback: '/offline'  //todo link to our custom offline page 
+    navigationFallback: '/'  //todo link to our custom offline page 
 }
 
-// notify.init(config);
+notify.init(config);
 
-notify.init();
+
+//notify.init();

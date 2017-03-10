@@ -293,12 +293,12 @@
                     }
                 }
                 if (configOption.hasOwnProperty('staticFiles')) {
-                    for (var urlPattern in configOption.sataticFiles) {
+                    for (var urlPattern in configOption.staticFiles) {
                         var _requestType = configOption.staticFiles[urlPattern].requestType;
                         var _handler = 'cacheOnly';
                         var _maxAge = configOption.staticFiles[urlPattern].maxAge;
                         var _maxLimit = configOption.staticFiles[urlPattern].maxLimit;
-                        var _cacheName = utils.getDeaultCacheName;
+                        var _cacheName = utils.getDeaultCacheName();
                         if (_requestType && utils.validateRequestType(_requestType)) {
                             // yes  'requestType' property is present
                             utils[_requestType](urlPattern, _handler, _maxAge, _maxLimit, _cacheName);
@@ -316,7 +316,7 @@
                         var _handler = 'networkOnly';
                         var _maxAge = configOption.dynamicFiles[urlPattern].maxAge;
                         var _maxLimit = configOption.dynamicFiles[urlPattern].maxLimit;
-                        var _cacheName = utils.getDeaultCacheName;
+                        var _cacheName = utils.getDeaultCacheName();
                         if (_requestType && utils.validateRequestType(_requestType)) {
                             // yes  'requestType' property is present
                             utils[_requestType](urlPattern, _handler, _maxAge, _maxLimit, _cacheName);
