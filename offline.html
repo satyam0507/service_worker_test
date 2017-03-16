@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Offline</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body style="background-color: #eee">
+        <style>
+            .flex{
+                display:flex;
+            }
+            .center{
+                align-items:center;
+            }
+            .middle{
+                justify-content:center;
+            }.underLine{
+                text-decoration: underline;
+            }
+            .bold{
+                font-weight: 600!important;
+            }
+            .box-container{
+                font-family: 'FuturaBT-Medium';
+                width:100vw;
+                height:400px;
+            }
+            .box{
+                font-family: 'FuturaBT-Medium';
+                min-width: 500px;
+                box-shadow: 0px 1px 3px rgba(0,0,0,0.5);
+                border-radius: 3px;
+                flex-direction:column;
+                padding: 10px 10px 30px 10px;
+                color: #ed1164;
+                background-color: #fff;
+            }
+            .btn-container{
+                flex-direction:row;
+            }
+            .btn{
+
+                font-size: 14px;
+                line-height: 18px;
+                color: #ed1164;
+                border: 1px solid #d4d1d2;
+                outline: none;
+                background-color: #ffffff;
+                width: 145px;
+                height: 35px;
+                margin-right: 15px;
+
+            }
+            .btn:hover{
+                box-shadow: 0px 1px 4px rgba(0,0,0,.4);
+            }
+            .btn:active{
+                box-shadow: none!important;
+            }
+            .msg{
+                font-family: inherit;
+                font-size: 20px;
+            }
+        </style>
+        <div class="flex center middle box-container">
+            <div class="flex center middle box">
+                <p class="msg">You are currently working <span class="underLine bold">Offline</span></p>
+                <div class="btn-container flex center middle">
+                    <button id="js-btn-back" class="btn">Go Back</button>
+                    <button id="js-btn-home" class="btn">Home</button>
+                </div> 
+            </div>
+        </div>
+        <script>
+            ;
+            (function () {
+                var backBtn = document.getElementById('js-btn-back');
+                if (backBtn) {
+                    backBtn.addEventListener('click', function (evt) {
+                        evt.preventDefault();
+                        console.log('ha click');
+                        history.back();
+                    })
+                }
+                var homeBtn = document.getElementById('js-btn-home');
+                if (homeBtn) {
+                    homeBtn.addEventListener('click', function (evt) {
+                        evt.preventDefault();
+                        location.href = '/';
+                    })
+                }
+            })();
+        </script>
+    </body>
+</html>
