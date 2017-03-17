@@ -12,8 +12,9 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
-var ver = '0.0.8';
+var ver = '0.0.26';
 
 var notifyvisitors_brandid = null;
-importScripts('sw-notify.js');
+importScripts('./sw-notify.js');
+
 
