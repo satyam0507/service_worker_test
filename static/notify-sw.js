@@ -232,11 +232,7 @@
             toolbox.options.preCacheItems = configOption.preCache;
             toolbox.options.navigationFallback = configOption.navigationFallback;
 
-            self.addEventListener('fetch', event => {
-                if (event.request.mode === 'navigate') {
-                    console.log(event.request);
-                }
-            });
+           
 
             if (configOption.hasOwnProperty('urls')) {
                 for (var urlPattern in configOption.urls) {
