@@ -14,7 +14,23 @@
 
 var ver = '0.0.26';
 
-var notifyvisitors_brandid = null;
-importScripts('./sw-notify.js');
+// var notifyvisitors_brandid = null;
+// importScripts('./sw-notify.js');
+function fetchListener(event){
+    // console.log(request);
+    fetch(event.request).then(function(response){
+        if(response && response.status === 200){
+            return response;
+        }else{
+            console.log('not a good response');
+        }
+    }).catch(function(err){
+        console.log(err);
+    })
+}
+
+self.addEventListener('fetch',fetchListener);
+
+
 
 

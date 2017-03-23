@@ -23,23 +23,24 @@ if(navigator.serviceWorker){
 }
 
 (function(){
-    // var btn = document.getElementById('btn');
-    // btn.addEventListener('click',function(evt){
-    //     // evt.preventDefault();
-    //     var data={
-    //         name:'satyam singh',
-    //         data:'haha'
-    //     }
-    //     fetch('/data', {
-    //         method: "POST",
-    //         headers: new Headers({
-    //             'Content-Type': 'application/json'
-    //         }),
-    //         body: JSON.stringify(data)
-    //     }).then(function (data) {
-    //         console.log(data);
-    //     }).catch(function(err){
-    //         console.log(err);
-    //     })
-    // })
+    var btn = document.getElementById('btn');
+    btn.addEventListener('click',function(evt){
+        // evt.preventDefault();
+        // var data={
+        //     name:'satyam singh',
+        //     data:'haha'
+        // }
+        fetch('/data', {
+            method: "POST",
+            headers: new Headers({
+                'Content-Type': 'application/json'
+            })
+            // ,
+            // body: JSON.stringify(data)
+        }).then(function (data) {
+            console.log(data);
+        }).catch(function(err){
+            console.log(err);
+        })
+    })
 })()
