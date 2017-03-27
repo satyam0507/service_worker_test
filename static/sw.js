@@ -1,77 +1,52 @@
-//    Copyright 2017 Satyam Singh (satyam0507@gmail.com) All Rights Reserved.
-// 
-//    Licensed under the Apache License, Version 2.0 (the "License");
-//    you may not use this file except in compliance with the License.
-//    You may obtain a copy of the License at
-// 
-//        http://www.apache.org/licenses/LICENSE-2.0
-// 
-//    Unless required by applicable law or agreed to in writing, software
-//    distributed under the License is distributed on an "AS IS" BASIS,
-//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//    See the License for the specific language governing permissions and
-//    limitations under the License.
+self.addEventListener('activate', function (event) {
+  event.waitUntil(self.clients.claim());
+});
+self.addEventListener('push', function (event) {
+  console.log('Push message received', event);
+  event.waitUntil(
+    self.registration.pushManager.getSubscription()
+      .then(function (subscription) {
+        var title = 'Title';
 
-var ver = '0.0.26';
+        self.registration.showNotification(title, {
+          body: `Labore ad exercitation ut quis. Nostrud deserunt veniam amet eu aliquip dolor nostrud deserunt enim ut ad excepteur. Mollit sit dolor mollit veniam laboris amet proident quis veniam Lorem. Ullamco veniam ea occaecat nulla aliqua est amet voluptate deserunt ut cillum. Velit fugiat exercitation laborum dolor nulla aliquip Lorem aute dolor exercitation.`,
+          requireInteraction: true,
+          icon: 'https://www.w3schools.com/css/img_fjords.jpg',
+          tag: 'Unique Tag',
+          image:'https://www.w3schools.com/css/img_fjords.jpg',
+          badge: '/image/dev_chrome.png',
+          sound: 'https://www.youtube.com/watch?v=6Tv6gQgj0VQ',
+          // lang:'hi'
+          actions: [{ title: 'action2', icon: 'https://s3.amazonaws.com/notifyvisitors/site/webapp/app.jpg', action: 'actionOne' },
+          { title: 'action1', icon: 'https://s3.amazonaws.com/notifyvisitors/site/webapp/linkgrey.jpg', action: 'actionTwo' }],
+          // actions: action,
+          data: {
+           
+          }
+        })
 
-// // var notifyvisitors_brandid = null;
-// // importScripts('./sw-notify.js');
-// function fetchListener(event){
-//     // console.log(request);
-//     fetch(event.request).then(function(response){
-//         if(response && response.status === 200){
-//             return response;
-//         }else{
-//             console.log('not a good response');
-//         }
-//     }).catch(function(err){
-//         console.log(err);
-//     })
-// }
-
-// self.addEventListener('fetch',fetchListener);
-
-'use strict';
-
-var f1 = function () {
-  var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee() {
-    var x;
-    return regeneratorRuntime.wrap(function _callee$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            _context.next = 2;
-            return resolveAfter2Seconds(10);
-
-          case 2:
-            x = _context.sent;
-
-            console.log(x); // 10
-
-          case 4:
-          case 'end':
-            return _context.stop();
+      })
+  );
+});
+self.addEventListener('notificationclick', function (event) {
+  console.log('Notification click: tag ', event.notification.tag);
+  event.notification.close();
+  var url = 'https://satyamsingh.herokuapp.com/';
+  event.waitUntil(
+    clients.matchAll({
+      type: 'window'
+    })
+      .then(function (windowClients) {
+        for (var i = 0; i < windowClients.length; i++) {
+          var client = windowClients[i];
+          if (client.url === url && 'focus' in client) {
+            return client.focus();
+          }
         }
-      }
-    }, _callee, this);
-  }));
-
-  return function f1() {
-    return _ref.apply(this, arguments);
-  };
-}();
-
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
-
-function resolveAfter2Seconds(x) {
-  return new Promise(function (resolve) {
-    setTimeout(function () {
-      resolve(x);
-    }, 2000);
-  });
-}
-
-f1();
-console.log('ha');
-
+        if (clients.openWindow) {
+          return clients.openWindow(url);
+        }
+      })
+  );
+});
 

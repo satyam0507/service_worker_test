@@ -14,17 +14,22 @@
 
 console.log('app.js');
 
-if(navigator.serviceWorker){
-    navigator.serviceWorker.register('sw.js',{scope:'/'}).then(function(){
+if (navigator.serviceWorker) {
+    navigator.serviceWorker.register('sw.js', { scope: '/' }).then(function () {
         console.log('service worker registered successfully');
-    }).catch(function(err){
-        console.log('not able to register service worker :: '+err);
+        Notification.requestPermission(function (result) {
+            if (result === 'granted') {
+                console.log('premission granted');
+            }
+        })
+    }).catch(function (err) {
+        console.log('not able to register service worker :: ' + err);
     })
 }
 
-(function(){
+(function () {
     var btn = document.getElementById('btn');
-    btn.addEventListener('click',function(evt){
+    btn.addEventListener('click', function (evt) {
         // evt.preventDefault();
         // var data={
         //     name:'satyam singh',
@@ -39,7 +44,7 @@ if(navigator.serviceWorker){
             // body: JSON.stringify(data)
         }).then(function (data) {
             console.log(data);
-        }).catch(function(err){
+        }).catch(function (err) {
             console.log(err);
         })
     })

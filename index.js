@@ -6,7 +6,7 @@ var exphbs = require('express-handlebars');
 var app = express();
 // app.use(bodyParser.json());
 
-var port = 9090;
+var port = 8000;
 
 app.engine('hbs', exphbs({ defaultLayout: 'main', extname: '.hbs' }));
 app.set('view engine', 'hbs');
