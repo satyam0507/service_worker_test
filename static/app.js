@@ -15,8 +15,8 @@
 console.log('app.js');
 
 if (navigator.serviceWorker) {
-    navigator.serviceWorker.register('sw.js', { scope: '/' }).then(function () {
-        console.log('service worker registered successfully');
+    navigator.serviceWorker.register('sw.js', { scope: '/about' }).then(function () {
+        console.log('service worker registered successfully 1');
         Notification.requestPermission(function (result) {
             if (result === 'granted') {
                 console.log('premission granted');
@@ -25,6 +25,16 @@ if (navigator.serviceWorker) {
     }).catch(function (err) {
         console.log('not able to register service worker :: ' + err);
     })
+    //   navigator.serviceWorker.register('sw1.js', { scope: '/home' }).then(function () {
+    //     console.log('service worker registered successfully 2');
+    //     Notification.requestPermission(function (result) {
+    //         if (result === 'granted') {
+    //             console.log('premission granted');
+    //         }
+    //     })
+    // }).catch(function (err) {
+    //     console.log('not able to register service worker :: ' + err);
+    // })
 }
 
 (function () {

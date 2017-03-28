@@ -1,3 +1,5 @@
+// self.addEventListener('fetch', fetchListener);
+
 self.addEventListener('activate', function (event) {
   event.waitUntil(self.clients.claim());
 });
@@ -13,7 +15,7 @@ self.addEventListener('push', function (event) {
           requireInteraction: true,
           icon: 'https://www.w3schools.com/css/img_fjords.jpg',
           tag: 'Unique Tag',
-          image:'https://www.w3schools.com/css/img_fjords.jpg',
+          image: 'https://www.w3schools.com/css/img_fjords.jpg',
           badge: '/image/dev_chrome.png',
           sound: 'https://www.youtube.com/watch?v=6Tv6gQgj0VQ',
           // lang:'hi'
@@ -21,7 +23,7 @@ self.addEventListener('push', function (event) {
           { title: 'action1', icon: 'https://s3.amazonaws.com/notifyvisitors/site/webapp/linkgrey.jpg', action: 'actionTwo' }],
           // actions: action,
           data: {
-           
+
           }
         })
 
@@ -50,3 +52,35 @@ self.addEventListener('notificationclick', function (event) {
   );
 });
 
+
+// function fetchListener(event) {
+//   fetch(event.request)
+//     .then(function (response) {
+//       if (response && response.status === 200) {
+//         return response;
+//       } else {
+//         console.log('not a valid response');
+//       }
+//     }).catch(function (err) {
+//       console.log(event.request);
+//       if (event.request.method === 'POST') {
+//         console.log('fallback to IDB');
+//         fallbackIDB().then(function (IDBres) {
+//           if (IDBres) {
+//             return IDBres;
+//           } else {
+//             console.log('fallback also fail :: no res found');
+//           }
+//         }).catch(function(err){
+//           console.log('fallback also fail :: '+err);
+//         })
+//       }
+
+//     })
+// }
+
+// function fallbackIDB(){
+//    return new Promise(function(resolve,reject){
+
+//    })
+// }
