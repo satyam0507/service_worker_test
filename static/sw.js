@@ -51,6 +51,11 @@ self.addEventListener('notificationclick', function (event) {
       })
   );
 });
+self.addEventListener("message", function (e) {
+  // e.source is a client object
+  console.log(e);
+  e.source.postMessage("Hello! Your message was: " + e.data);
+});
 
 
 // function fetchListener(event) {
