@@ -60,6 +60,25 @@ app.post('/data', function (req, res) {
     )
 })
 
+app.get('/data', function (req, res) {
+    res.json(
+        {
+            "ver": "0.0.8",
+            "cache": {
+                "name": "notify-abc",
+                "maxAge": 604800,
+                "maxLimit": 1000
+            },
+            "preCache": [
+                "/",
+                "app.css",
+                "app.js"
+            ],
+            "handler": "fastest"
+        }
+    )
+})
+
 
 app.listen(port, function () {
     console.log('app at port:- ' + port);
