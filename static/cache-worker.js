@@ -3,45 +3,42 @@ var version = '1.0.0';
 console.log('sw cache ' + version);
 
 
-//var notify_config = {
-//    defaultHandler: "networkOnly",
-//    navigationFallback: '/notifyvisitors_push/cache/offline.html',
-//    cache: {
-//        name: "notify-2", //@ string
-//        maxAge: 604800, //@ number in sec
-//        maxLimit: 10000 //@ number in sec
-//    },
-//    urls: {
-//        '/(.*)': {
-//            handler: 'networkFirst', // @ string
-//        }
-//    },
-//    preCache: [
-//        "/", "/notifyvisitors_push/cache/offline.html"
-//    ],
-//    staticFiles: [
-//        {
-//            maxAge: 604800, //@ number in sec
-//            maxLimit: 10000, //@ number in sec
-//            origin: 'https://s3.amazonaws.com',
-//            urlPattern: '/(.*)'
-//        }
-//    ]
-//
-//
-//};
+var notify_config = {
+   defaultHandler: "networkOnly",
+   navigationFallback: '/offline',
+   cache: {
+       name: "sw-test", //@ string
+       maxAge: 604800, //@ number in sec
+       maxLimit: 10000 //@ number in sec
+   },
+   urls: {
+       '/(.*)': {
+           handler: 'networkFirst', // @ string
+       }
+   },
+   preCache: [
+       "/", "/offline"
+   ],
+   staticFiles: [
+       {
+           urlPattern: '/(.*)/*.jpg'
+       }
+   ]
+
+
+};
 //var notify_config ;
-fetch('https://devpush.notifyvisitors.com/pwa/sw/notification')
-            .then(function (response) {
-                return response.json();
-            }).then(function (resObj) {
-        console.log(resObj);
-        if (resObj.config && typeof resObj.config === 'object') {
-            notify.init(resObj.config);
-        } else {
-            notify.init();
-        }
-    });
+// fetch('https://devpush.notifyvisitors.com/pwa/sw/notification')
+//             .then(function (response) {
+//                 return response.json();
+//             }).then(function (resObj) {
+//         console.log(resObj);
+//         if (resObj.config && typeof resObj.config === 'object') {
+//             notify.init(resObj.config);
+//         } else {
+//             notify.init();
+//         }
+//     });
 
 (function (e) {
     if (typeof exports === "object" && typeof module !== "undefined") {
@@ -1326,7 +1323,7 @@ fetch('https://devpush.notifyvisitors.com/pwa/sw/notification')
     }
 });
 
-//notify.init();
+notify.init(notify_config);
 
 //
 //fetch('https://devpush.notifyvisitors.com/pwa/sw/notification')
