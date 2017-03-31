@@ -41,9 +41,9 @@ function offline() {
 }
 
 function getList() {
-        return caches.open('sw-test').then(function (cache) {
-           return cache.keys();
-        })
+    return caches.open('sw-test').then(function (cache) {
+        return cache.keys();
+    })
 }
 
 function modifyLinks(links) {
@@ -65,22 +65,22 @@ function getAllKeys(_urls) {
     var elem = [];
     for (var elStr of elType) {
         for (var key of _urls) {
-            var searchStr = elStr+'[href="' + key.pathname + '"]';
+            var searchStr = elStr + '[href="' + key.pathname + '"]';
             var el = document.querySelectorAll(searchStr);
-            if (el) {
+            if (el && el.length > 0) {
                 elem.push(el);
             }
         }
-        elem.push(document.querySelectorAll(elStr+'[href^="#"]'));
+        elem.push(document.querySelectorAll(elStr + '[href^="#"]'));
     }
     addScript().then(function () {
         console.log('script Added');
-    }).catch(function(err){
+    }).catch(function (err) {
         console.log('some thing wrong during adding the script');
     });
     addCss(elem).then(function () {
         console.log('class Added');
-    }).catch(function(err){
+    }).catch(function (err) {
         console.log('some thing wrong during adding the class');
     });;
 }
