@@ -23,10 +23,17 @@ if (navigator.serviceWorker) {
 }
 
 window.addEventListener('offline', offline);
-window.addEventListener('online', reload);
+// window.addEventListener('online', reload);
 
-function reload() {
-    location.reload();
+// function reload() {
+//     location.reload();
+// }
+window.addEventListener('online', online);
+function online() {
+    var styleEl = document.getElementById('nv-style');
+    if (styleEl) {
+        styleEl.remove();
+    }
 }
 
 if (!navigator.onLine) {
@@ -100,6 +107,16 @@ function addCss(elemArray) {
                     if (el) {
                         el.classList.add('available');
                     }
+                    // if (el.style.backgroundColor) {
+                    //     var col = el.style.backgroundColor;
+                    //     col = rgb2hex(col);
+                    //     var newColor = convertColor(col);
+                    //         //                        var white = 0x000000;
+                    //         //                        var newColor = toColor(white - parseInt(rgb2hex(color)));
+                    //         newColor = d2h(newColor);
+                    //     console.log(newColor);
+                    //     el.style.backgroundColor = newColor;
+                    // }
                 }
 
             }
@@ -109,17 +126,39 @@ function addCss(elemArray) {
 
 
 }
+function d2h(d) {
+
+    return '#' + (+ d).toString(16).toUpperCase();
+}
+function rgb2hex(rgb) {
+    rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+    return (rgb && rgb.length === 4) ? "0x" +
+        ("0" + parseInt(rgb[1], 10).toString(16)).slice(- 2) +
+        ("0" + parseInt(rgb[2], 10).toString(16)).slice(- 2) +
+        ("0" + parseInt(rgb[3], 10).toString(16)).slice(- 2) : '';
+};
+function convertColor(col) {
+    return (((((((col >> 16) & 0xff) * 76) + (((col >> 8) & 0xff) * 150) +
+        ((col & 0xff) * 29)) >> 8)) << 16) |
+        (((((((col >> 16) & 0xff) * 76) + (((col >> 8) & 0xff) * 150) +
+            ((col & 0xff) * 29)) >> 8)) << 8) |
+        ((((((col >> 16) & 0xff) * 76) + (((col >> 8) & 0xff) * 150) +
+            ((col & 0xff) * 29)) >> 8));
+};
 function addScript() {
     return new Promise(function (resolve, reject) {
         var style = document.createElement("style");
         style.textContent = `a:not(.available){
-                            color: #ddd!important;
+                        color: #dcb!important;
                         }
                         a:not(.available):hover{
-                            color: #ddd!important;
+                        color: #dcb!important;
                         }
                         a:not(.available):active{
-                            color: #ddd!important;
+                        color: #dcb!important;
+                        }
+                        *:not(.available){
+                       filter:grayscale(100%);
                         }`;
         document.body.appendChild(style);
         resolve();
