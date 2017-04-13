@@ -1,1 +1,22 @@
 <div> view 6</div>
+<iframe height="100%" width="100%" src="http://localhost:8100/" id="js-iframe"></iframe>
+<script>
+    window.addEventListener("message", receiveMessage, false);
+
+    function receiveMessage(event) {
+        var origin = event.origin || event.originalEvent.origin; // For Chrome, the origin property is in the event.originalEvent object.
+        console.log('we have a message :: ' + event.data);
+
+        var marginBottom = 40;
+        var innerWidth = window.innerWidth;
+        var innerheight = window.innerHeight;
+        var height = Math.min((event.data.height + marginBottom),innerHeight-20);
+        var width = Math.min((event.data.width + marginBottom),innerWidth-20);
+        var el = document.getElementById('js-iframe');
+        if (el) {
+            el.setAttribute('height', height);
+            el.setAttribute('width', width);
+        }
+    }
+
+</script>

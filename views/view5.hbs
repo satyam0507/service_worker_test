@@ -1,3 +1,18 @@
-<div> view 5</div>
+<div> view 5 testing 234567</div>
 
-<a href="/data.json" target="_blank">Get json</a>
+{{!--<a href="/data.json" target="_blank">Get json</a>--}}
+<div id="js-hook"></div>
+<script>
+    fetch('https://s3.amazonaws.com/notifypush/cache_worker/config-5103.js').then((res) => {
+        let el = document.getElementById('js-hook');
+        if (el) {
+            res.text().then((data)=>{
+                el.innerText = data;
+            }).catch((err)=>{
+                console.log(err);
+            })
+            
+        }
+    })
+
+</script>

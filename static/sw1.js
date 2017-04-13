@@ -1,3 +1,3 @@
-var ver = '0.0.2';
+var ver = '0.1.1';
 importScripts('/sw-notify-config.js');
-importScripts('/sw-notify-0.1.js');
+importScripts('/sw-notify.js');

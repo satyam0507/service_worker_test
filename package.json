@@ -9,9 +9,11 @@
   "author": "Satyam Singh (satyam0507@gmail.com)",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.15.0",
     "body-parser": "^1.15.2",
+    "express": "^4.15.0",
     "express-handlebars": "^3.0.0",
+    "node-fetch": "^1.6.3",
+    "pem": "^1.9.4",
     "sw-toolbox": "^3.6.0"
   },
   "devDependencies": {
