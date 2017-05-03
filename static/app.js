@@ -15,20 +15,20 @@
 console.log('app.js');
 
 if (navigator.serviceWorker) {
-    navigator.serviceWorker.register('sw1.js', { scope: '/' }).then(function () {
+    navigator.serviceWorker.register('sw.js', { scope: '/' }).then(function () {
         console.log('service worker registered successfully 1');
         Notification.requestPermission(function (result) {
             if (result === 'granted') {
                 console.log('premission granted');
             }
         })
-        sendMessage('this is your client')
-            .then(e => {
-                console.log(e);
-            })
-            .catch(err => {
-                console.log(err);
-            })
+        // sendMessage('this is your client')
+        //     .then(e => {
+        //         console.log(e);
+        //     })
+        //     .catch(err => {
+        //         console.log(err);
+        //     })
     }).catch(function (err) {
         console.log('not able to register service worker :: ' + err);
     })
@@ -43,6 +43,14 @@ if (navigator.serviceWorker) {
     //     console.log('not able to register service worker :: ' + err);
     // })
 }
+
+if (window.Worker) {
+
+  var myWorker = new Worker('worker.js');
+
+}
+
+
 function sendMessage(message) {
     return new Promise(function (resolve, reject) {
         // note that this is the ServiceWorker.postMessage version

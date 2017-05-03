@@ -10,7 +10,7 @@ var notify_config = {
    },
    urls: {
        '/(.*)': {
-           handler: 'cacheFirst', // @ string
+           handler: 'networkFirst', // @ string
        }
    },
    preCache: [
